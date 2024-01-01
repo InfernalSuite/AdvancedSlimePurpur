@@ -98,6 +98,20 @@ public class FlowPersistentDataContainer implements PersistentDataContainer, Per
     }
 
     @Override
+    public void copyTo(PersistentDataContainer other, boolean replace) {
+        FlowPersistentDataContainer target = (FlowPersistentDataContainer) other;
+        if (replace) {
+            root.getValue().putAll(target.root.getValue());
+        } else {
+            root.getValue().forEach((key, value) -> {
+                if (!target.root.getValue().containsKey(key)) {
+                    target.root.getValue().put(key, value);
+                }
+            });
+        }
+    }
+
+    @Override
     public @NotNull PersistentDataAdapterContext getAdapterContext() {
         return this;
     }

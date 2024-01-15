@@ -5,6 +5,7 @@ import com.flowpowered.nbt.CompoundTag;
 import com.flowpowered.nbt.Tag;
 import com.flowpowered.nbt.stream.NBTInputStream;
 import com.flowpowered.nbt.stream.NBTOutputStream;
+import com.google.common.base.Preconditions;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -98,16 +99,17 @@ public class FlowPersistentDataContainer implements PersistentDataContainer, Per
     }
 
     @Override
-    public void copyTo(PersistentDataContainer other, boolean replace) {
-        FlowPersistentDataContainer target = (FlowPersistentDataContainer) other;
-        if (replace) {
-            root.getValue().putAll(target.root.getValue());
+    public void copyTo(@NotNull PersistentDataContainer other, boolean replace) {
+        Preconditions.checkNotNull(other, "The target container cannot be null");
+
+        if (other instanceof FlowPersistentDataContainer otherFlow) {
+            if (replace) {
+                otherFlow.root.setValue(this.root.getValue());
+            } else {
+                otherFlow.root.getValue().forEach((k, v) -> otherFlow.root.getValue().putIfAbsent(k, v));
+            }
         } else {
-            root.getValue().forEach((key, value) -> {
-                if (!target.root.getValue().containsKey(key)) {
-                    target.root.getValue().put(key, value);
-                }
-            });
+            throw new IllegalStateException("Cannot copy to a container that isn't a FlowPersistentDataContainer");
         }
     }
 

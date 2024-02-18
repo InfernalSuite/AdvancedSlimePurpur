@@ -186,10 +186,10 @@ index 65b475b1292e01c918c1f8144599b5fa78688e97..a525fa1781535d458c5ecb67e2615206
                  try {
                      byte[] serializedWorld = SlimeSerializer.serialize(world);
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 87e664a75c5bd6019bf33f45e9750be5c5558a0a..4897d9b53126f4d90f1a896f13d13a3d13fac701 100644
+index 906267efb2560656359296546e589ab9b4dac6c9..87bdac53f16506382ef1f06438107cfe1b077da1 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -460,7 +460,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+@@ -454,7 +454,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
                  io.papermc.paper.chunk.system.io.RegionFileIOThread.getIOBlockingPriorityForCurrentThread()
              );
          }

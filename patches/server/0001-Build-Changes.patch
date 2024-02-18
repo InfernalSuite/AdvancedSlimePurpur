@@ -26,6 +26,57 @@ index 0c92d10f334f82d196e065c0811d0c1f48887377..dd4b7c7650ead946db52ee621d083d4f
      mainClass.set("org.bukkit.craftbukkit.Main")
      standardInput = System.`in`
      workingDir = rootProject.layout.projectDirectory
+diff --git a/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java b/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java
+index b5c594a5499556ad452d9939c75e150af8252e90..b51687f52d4926d7696ca93115682b31abdde3d8 100644
+--- a/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java
++++ b/src/main/java/com/destroystokyo/paper/entity/ai/PaperVanillaGoal.java
+@@ -7,7 +7,7 @@ import org.bukkit.entity.Mob;
+ /**
+  * Wraps vanilla in api
+  */
+-public class PaperVanillaGoal<T extends Mob> implements VanillaGoal<T> {
++public class PaperVanillaGoal<T extends Mob> {
+ 
+     private final Goal handle;
+     private final GoalKey<T> key;
+@@ -24,37 +24,30 @@ public class PaperVanillaGoal<T extends Mob> implements VanillaGoal<T> {
+         return handle;
+     }
+ 
+-    @Override
+     public boolean shouldActivate() {
+         return handle.canUse();
+     }
+ 
+-    @Override
+     public boolean shouldStayActive() {
+         return handle.canContinueToUse();
+     }
+ 
+-    @Override
+     public void start() {
+         handle.start();
+     }
+ 
+-    @Override
+     public void stop() {
+         handle.stop();
+     }
+ 
+-    @Override
+     public void tick() {
+         handle.tick();
+     }
+ 
+-    @Override
+     public GoalKey<T> getKey() {
+         return key;
+     }
+ 
+-    @Override
+     public EnumSet<GoalType> getTypes() {
+         return types;
+     }
 diff --git a/src/main/java/com/infernalsuite/aswm/Converter.java b/src/main/java/com/infernalsuite/aswm/Converter.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..7d1753c0b7e89bbf0c245a0231b62773eca2779e

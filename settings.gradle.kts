@@ -7,5 +7,5 @@ pluginManagement {
 
 rootProject.name = "slimeworldmanager"
 
-include("plugin", "core", "api", "importer")
+include("plugin", "core", "api", "importer", "loaders")
 include("slimeworldmanager-api", "slimeworldmanager-server")

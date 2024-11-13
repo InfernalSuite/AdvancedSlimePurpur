@@ -142,7 +142,7 @@ public class FlowPersistentDataContainer implements PersistentDataContainer, Per
         }
 
         NBTInputStream stream = new NBTInputStream(new ByteArrayInputStream(bytes), NBTInputStream.NO_COMPRESSION, ByteOrder.BIG_ENDIAN);
-        var compound = (com.flowpowered.nbt.CompoundTag) stream.readTag();
+        var compound = (CompoundTag) stream.readTag();
 
         if (clear) {
             root.getValue().clear();

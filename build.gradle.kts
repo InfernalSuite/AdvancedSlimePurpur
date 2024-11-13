@@ -1,8 +1,8 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("io.papermc.paperweight.patcher") version "1.5.11"
+    id("io.github.goooler.shadow") version "8.1.7" apply false
+    id("io.papermc.paperweight.patcher") version "1.7.1"
     id("org.kordamp.gradle.profiles") version "0.47.0"
 }
 
@@ -33,13 +33,15 @@ allprojects {
         maven("https://repo.codemc.io/repository/nms/")
         maven("https://repo.rapture.pw/repository/maven-releases/")
         maven("https://repo.glaremasters.me/repository/concuncan/")
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://jitpack.io/")
     }
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.10:fat")
-    decompiler("org.vineflower:vineflower:1.10.0-SNAPSHOT")
+    remapper("net.fabricmc:tiny-remapper:0.10.3:fat")
+    decompiler("org.vineflower:vineflower:1.10.1")
     paperclip("io.papermc:paperclip:3.0.3")
 }
 
@@ -80,6 +82,15 @@ paperweight {
 
             serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
             serverOutputDir.set(layout.projectDirectory.dir("slimeworldmanager-server"))
+        }
+
+        patchTasks {
+            register("generatedApi") {
+                isBareDirectory.set(true)
+                upstreamDirPath.set("paper-api-generator/generated")
+                patchDir.set(layout.projectDirectory.dir("patches/generatedApi"))
+                outputDir.set(layout.projectDirectory.dir("paper-api-generator/generated"))
+            }
         }
     }
 }

@@ -4,8 +4,21 @@ Date: Sun, 11 Jun 2023 17:19:05 +0100
 Subject: [PATCH] poi data loader
 
 
+diff --git a/src/main/java/ca/spottedleaf/moonrise/patches/chunk_system/level/poi/PoiChunk.java b/src/main/java/ca/spottedleaf/moonrise/patches/chunk_system/level/poi/PoiChunk.java
+index fd35e4db0c8fec8f86b8743bcc2b15ed2e7433f1..212595f0533f152384e010089660ebdd8d6fc395 100644
+--- a/src/main/java/ca/spottedleaf/moonrise/patches/chunk_system/level/poi/PoiChunk.java
++++ b/src/main/java/ca/spottedleaf/moonrise/patches/chunk_system/level/poi/PoiChunk.java
+@@ -17,7 +17,7 @@ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import java.util.Optional;
+ 
+-public final class PoiChunk {
++public class PoiChunk {
+ 
+     private static final Logger LOGGER = LoggerFactory.getLogger(PoiChunk.class);
+ 
 diff --git a/src/main/java/com/infernalsuite/aswm/level/ChunkDataLoadTask.java b/src/main/java/com/infernalsuite/aswm/level/ChunkDataLoadTask.java
-index 41e652b568598926e838e81fdc338e51f8e97ef8..3980d993f5d441587675a0f07cda6416aebab96d 100644
+index 41e652b568598926e838e81fdc338e51f8e97ef8..c32d52c68188dc1eb7feeac364cdc4aded1c4574 100644
 --- a/src/main/java/com/infernalsuite/aswm/level/ChunkDataLoadTask.java
 +++ b/src/main/java/com/infernalsuite/aswm/level/ChunkDataLoadTask.java
 @@ -14,6 +14,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
@@ -16,17 +29,22 @@ index 41e652b568598926e838e81fdc338e51f8e97ef8..3980d993f5d441587675a0f07cda6416
  import net.minecraft.world.level.material.Fluid;
  import net.minecraft.world.ticks.LevelChunkTicks;
  import org.slf4j.Logger;
-@@ -63,7 +64,7 @@ public final class ChunkDataLoadTask implements CommonLoadTask {
+@@ -63,13 +64,6 @@ public final class ChunkDataLoadTask implements CommonLoadTask {
      }
  
      protected ChunkAccess runOnMain(final SlimeChunk data) {
 -        final PoiChunk poiChunk = this.chunkLoadTask.chunkHolder.getPoiChunk();
-+        final PoiChunk poiChunk = this.world.chunkTaskScheduler.chunkHolderManager.getPoiChunkIfLoaded(this.chunkX, this.chunkZ, true);
-         if (poiChunk == null) {
-             LOGGER.error("Expected poi chunk to be loaded with chunk for task " + this.toString());
-         } else {
+-        if (poiChunk == null) {
+-            LOGGER.error("Expected poi chunk to be loaded with chunk for task " + this.toString());
+-        } else {
+-            poiChunk.load();
+-        }
+-
+         // have tasks to run (at this point, it's just the POI consistency checking)
+         try {
+             //                if (data.tasks != null) {
 diff --git a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
-index cca835b67337321f48622bde0d5aa390d645c1d6..3c1d10dcf777e2a1a3c3473c822743a2044d5bc6 100644
+index 4bd048387651250135f963303c78c17f8473cfee..cba780ab2eb3d37d7f54a71e248ca688f5d4179b 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 @@ -1,6 +1,9 @@
@@ -39,18 +57,10 @@ index cca835b67337321f48622bde0d5aa390d645c1d6..3c1d10dcf777e2a1a3c3473c822743a2
  import com.mojang.logging.LogUtils;
  import com.mojang.serialization.Codec;
  import com.mojang.serialization.DataResult;
-@@ -144,6 +147,7 @@ public class ChunkSerializer {
-         }
-         // Paper end - Do not let the server load chunks from newer versions
-         InProgressChunkHolder holder = readInProgressChunkHolder(world, poiStorage, chunkPos, nbt);
-+
-         return holder.protoChunk;
-     }
- 
-@@ -257,6 +261,10 @@ public class ChunkSerializer {
-                     flag = false;
+@@ -200,6 +203,10 @@ public class ChunkSerializer {
+                 if (flag4) {
+                     levellightengine.queueSectionData(LightLayer.SKY, SectionPos.of(chunkPos, b0), new DataLayer(nbttagcompound1.getByteArray("SkyLight")));
                  }
-                 // Paper end - rewrite light engine
 +
 +                if(world instanceof SlimeLevelInstance) {
 +                    poiStorage.checkConsistencyWithBlocks(SectionPos.of(chunkPos.getWorldPosition()), achunksection[j]);

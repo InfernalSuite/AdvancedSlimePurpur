@@ -5,20 +5,32 @@ Subject: [PATCH] Slime World Manager
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 0a33275fdf16bda47771bab9ddfeb2bf8616c2dc..a00e2359fc36f9a6319503093bb0b5b7b6eb8e72 100644
+index f536f8f42b99e4b7dc2e25785617837fbc405b5b..22f8fe04e190d52ba1ff06e8ddedd5c28b4b4559 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -1,3 +1,5 @@
-+
-+
- plugins {
-     `java-library`
-     `maven-publish`
-@@ -28,6 +30,7 @@ configurations.api {
- 
+@@ -29,6 +29,7 @@ configurations.api {
  dependencies {
+     api("com.mojang:brigadier:1.2.9") // Paper - Brigadier command api
      // api dependencies are listed transitively to API consumers
 +    api(project(":api")) // ASWM
      api("com.google.guava:guava:32.1.2-jre")
      api("com.google.code.gson:gson:2.10.1")
      // Paper start - adventure
+diff --git a/src/main/java/io/papermc/paper/ServerBuildInfo.java b/src/main/java/io/papermc/paper/ServerBuildInfo.java
+index 7196594e07af19a14c320d77df893978525fe386..a4dcef63551e13b1c9080e7c07b3be40518541a8 100644
+--- a/src/main/java/io/papermc/paper/ServerBuildInfo.java
++++ b/src/main/java/io/papermc/paper/ServerBuildInfo.java
+@@ -33,6 +33,13 @@ public interface ServerBuildInfo {
+     Key BRAND_PURPUR_ID = Key.key("purpurmc", "purpur");
+     // Purpur end
+ 
++    // ASWM start
++    /**
++     * The brand id for AdvancedSlimePaper.
++     */
++    Key BRAND_ADVANCED_SLIME_PAPER_ID = Key.key("infernalsuite", "advancedslimepaper");
++    // ASWM end
++
+     /**
+      * Gets the {@code ServerBuildInfo}.
+      *

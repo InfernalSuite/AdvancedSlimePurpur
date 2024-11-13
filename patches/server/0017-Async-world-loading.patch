@@ -1,0 +1,81 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ProdPreva1l <prod.preva1l@gmail.com>
+Date: Mon, 11 Nov 2024 20:55:33 +1100
+Subject: [PATCH] Async world loading
+
+
+diff --git a/src/main/java/com/infernalsuite/aswm/AdvancedSlimePaper.java b/src/main/java/com/infernalsuite/aswm/AdvancedSlimePaper.java
+index 85a5b184a1795fe3756596634e883757a980525b..0cecc5259e62e7b95596953adf48e1935522b3c0 100644
+--- a/src/main/java/com/infernalsuite/aswm/AdvancedSlimePaper.java
++++ b/src/main/java/com/infernalsuite/aswm/AdvancedSlimePaper.java
+@@ -35,6 +35,7 @@ import java.util.Objects;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.concurrent.ExecutionException;
+ import java.util.concurrent.Future;
++import java.util.concurrent.locks.ReentrantLock;
+ 
+ public class AdvancedSlimePaper implements AdvancedSlimePaperAPI {
+ 
+@@ -43,6 +44,8 @@ public class AdvancedSlimePaper implements AdvancedSlimePaperAPI {
+ 
+     private final Map<String, SlimeWorld> loadedWorlds = new ConcurrentHashMap<>();
+ 
++    private final ReentrantLock loadLock = new ReentrantLock(true);
++
+     static {
+         System.setProperty("org.slf4j.simpleLogger.showShortLogName", "true");
+     }
+@@ -77,18 +80,20 @@ public class AdvancedSlimePaper implements AdvancedSlimePaperAPI {
+ 
+     @Override
+     public SlimeWorld loadWorld(SlimeWorld world, boolean callWorldLoadEvent) throws IllegalArgumentException {
+-        AsyncCatcher.catchOp("SWM world load");
+         Objects.requireNonNull(world, "SlimeWorld cannot be null");
+ 
+         if (Bukkit.getWorld(world.getName()) != null) {
+             throw new IllegalArgumentException("World " + world.getName() + " is already loaded");
+         }
+ 
++        SlimeWorld mirror;
++        this.loadLock.lock();
++        try {
+         LOGGER.info("Loading world {}...", world.getName());
+         long start = System.currentTimeMillis();
+ 
+         SlimeWorldInstance instance = BRIDGE_INSTANCE.loadInstance(world);
+-        SlimeWorld mirror = instance.getSlimeWorldMirror();
++        mirror = instance.getSlimeWorldMirror();
+ 
+         Bukkit.getPluginManager().callEvent(new LoadSlimeWorldEvent(mirror));
+         if (callWorldLoadEvent) {
+@@ -98,6 +103,9 @@ public class AdvancedSlimePaper implements AdvancedSlimePaperAPI {
+         registerWorld(mirror);
+ 
+         LOGGER.info("World {} loaded in {}ms.", world.getName(), System.currentTimeMillis() - start);
++        } finally {
++            this.loadLock.unlock();
++        }
+         return mirror;
+     }
+ 
+diff --git a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
+index 7ce9ebba8ce304d1f3f21d4f15ee5f3560d7700b..0521ea7663c62b104dee4abc056ef0c6d7cb26e4 100644
+--- a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
++++ b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
+@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
+ import org.bukkit.event.EventPriority;
+ import org.bukkit.event.HandlerList;
+ import org.bukkit.event.Listener;
++import org.bukkit.event.world.WorldEvent;
+ import org.bukkit.plugin.AuthorNagException;
+ import org.bukkit.plugin.EventExecutor;
+ import org.bukkit.plugin.IllegalPluginAccessException;
+@@ -38,7 +39,7 @@ class PaperEventManager {
+     public void callEvent(@NotNull Event event) {
+         if (event.isAsynchronous() && this.server.isPrimaryThread()) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered asynchronously.");
+-        } else if (!event.isAsynchronous() && !this.server.isPrimaryThread() && !this.server.isStopping()) {
++        } else if (!event.isAsynchronous() && !this.server.isPrimaryThread() && !this.server.isStopping() && !(event instanceof WorldEvent)) {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered synchronously.");
+         }
+ 

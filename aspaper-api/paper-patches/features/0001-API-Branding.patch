@@ -5,19 +5,35 @@ Subject: [PATCH] API Branding
 
 
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfo.java b/src/main/java/io/papermc/paper/ServerBuildInfo.java
-index 652ff54e7c50412503725d628bfe72ed03059790..d26bbab5b67b6456a2713e67c2bcfa17e7478992 100644
+index fb1fe2651e53a9bf46b3632c638e13eea9dcda93..cd6b7397d75373da57b209b43e601ad63f64871f 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfo.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfo.java
-@@ -19,6 +19,12 @@ public interface ServerBuildInfo {
+@@ -25,6 +25,15 @@ public interface ServerBuildInfo {
       */
-     Key BRAND_PAPER_ID = Key.key("papermc", "paper");
- 
+     Key BRAND_PURPUR_ID = Key.key("purpurmc", "purpur");
+     // Purpur end
 +
++    // ASP start
 +    /**
 +     * The brand id for AdvancedSlimePaper.
 +     */
 +    Key BRAND_ADVANCED_SLIME_PAPER_ID = Key.key("infernalsuite", "advancedslimepaper");
++    Key BRAND_ADVANCED_SLIME_PURPUR_ID = Key.key("infernalsuite", "advancedslimepurpur");
++    // ASP end
 +
      /**
       * Gets the {@code ServerBuildInfo}.
       *
+diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+index c880d0010849ab733ad13bbd18fab3c864d0cf61..b592bc04c001f029cea2a10b39107a8591ed916e 100644
+--- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
++++ b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+@@ -259,7 +259,7 @@ public class VersionCommand extends BukkitCommand {
+         // Purpur start
+         int distance = getVersionFetcher().distance();
+         final Component message = Component.join(net.kyori.adventure.text.JoinConfiguration.separator(Component.newline()),
+-            ChatColor.parseMM("<grey>Current Purpur Version: %s%s*", distance == 0 ? "<green>" : distance > 0 ? "<yellow>" : "<red>", Bukkit.getVersion()),
++            ChatColor.parseMM("<grey>Current AdvancedSlimePurpur Version: %s%s*", distance == 0 ? "<green>" : distance > 0 ? "<yellow>" : "<red>", Bukkit.getVersion()), //ASP
+             // Purpur end
+             msg
+         );

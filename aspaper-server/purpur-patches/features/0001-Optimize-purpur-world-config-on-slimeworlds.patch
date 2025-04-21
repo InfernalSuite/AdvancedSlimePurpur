@@ -1,0 +1,62 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: David Mayr <davidliebtkekse@gmail.com>
+Date: Mon, 21 Apr 2025 16:32:39 +0200
+Subject: [PATCH] Optimize purpur world config on slimeworlds
+
+
+diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+index 338154a8098b577acc54f5543f9c20ee91bbc40a..98f15e1f9906f38671bd87853c2b3455ae007b33 100644
+--- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -99,6 +99,11 @@ public class PurpurConfig {
+     }
+ 
+     static void readConfig(Class<?> clazz, Object instance) {
++        //ASP start - optimize purpur config loading
++        readConfig(clazz, instance, true);
++    }
++
++    static void readConfig(Class<?> clazz, Object instance, boolean save) { //ASP end - optimize purpur config loading
+         for (Method method : clazz.getDeclaredMethods()) {
+             if (Modifier.isPrivate(method.getModifiers())) {
+                 if (method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
+@@ -114,6 +119,8 @@ public class PurpurConfig {
+             }
+         }
+ 
++        if(!save) return; //ASP - optimize purpur config loading
++
+         try {
+             config.save(CONFIG_FILE);
+         } catch (IOException ex) {
+diff --git a/src/main/java/org/purpurmc/purpur/PurpurWorldConfig.java b/src/main/java/org/purpurmc/purpur/PurpurWorldConfig.java
+index 1dd74216ec8bfaca080bd6ae67169815e9a9b855..ddd27380f4b3469e3c23ed05926b977bfbd3e69f 100644
+--- a/src/main/java/org/purpurmc/purpur/PurpurWorldConfig.java
++++ b/src/main/java/org/purpurmc/purpur/PurpurWorldConfig.java
+@@ -38,14 +38,24 @@ public class PurpurWorldConfig {
+     private final World.Environment environment;
+ 
+     public PurpurWorldConfig(String worldName, World.Environment environment) {
++        //ASP start - optimize purpur config loading
++        this(worldName, environment, true);
++    }
++
++    public PurpurWorldConfig(String worldName, World.Environment environment, boolean save) {
++        //ASP end - optimize purpur config loading
+         this.worldName = worldName;
+         this.environment = environment;
+-        init();
++        init(save); //ASP - optimize purpur config loading
+     }
+ 
+     public void init() {
++        //ASP start - optimize purpur config loading
++        init(true);
++    }
++    public void init(boolean save) { //ASP end - optimize purpur config loading
+         log("-------- World Settings For [" + worldName + "] --------");
+-        PurpurConfig.readConfig(PurpurWorldConfig.class, this);
++        PurpurConfig.readConfig(PurpurWorldConfig.class, this, save); //ASP start - optimize purpur config loading
+     }
+ 
+     private void set(String path, Object val) {

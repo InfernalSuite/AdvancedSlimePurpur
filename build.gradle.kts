@@ -7,26 +7,32 @@ plugins {
 }
 
 paperweight {
-    upstreams.paper {
-        ref = providers.gradleProperty("paperRef")
+    upstreams.create("purpur") {
+        repo.set(github("purpurmc", "purpur"))
+        ref = providers.gradleProperty("purpurRef")
 
         // Setup file patches for build scripts
         patchFile {
-            path = "paper-api/build.gradle.kts"
-            outputFile = file("aspaper-api/build.gradle.kts")
-            patchFile = file("aspaper-api/build.gradle.kts.patch")
-        }
-        patchFile {
-            path = "paper-server/build.gradle.kts"
+            path = "purpur-server/build.gradle.kts"
             outputFile = file("aspaper-server/build.gradle.kts")
             patchFile = file("aspaper-server/build.gradle.kts.patch")
         }
+        patchFile {
+            path = "purpur-api/build.gradle.kts"
+            outputFile = file("aspaper-api/build.gradle.kts")
+            patchFile = file("aspaper-api/build.gradle.kts.patch")
+        }
 
-        patchDir("paperApi") {
+        patchRepo("paperApi") {
             upstreamPath = "paper-api"
-            excludes = setOf("build.gradle.kts")
             patchesDir = file("aspaper-api/paper-patches")
             outputDir = file("paper-api")
+        }
+        patchDir("purpurApi") {
+            upstreamPath = "purpur-api"
+            excludes = listOf("build.gradle.kts", "build.gradle.kts.patch", "paper-patches")
+            patchesDir = file("aspaper-api/purpur-patches")
+            outputDir = file("purpur-api")
         }
     }
 }

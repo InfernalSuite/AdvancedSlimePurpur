@@ -11,7 +11,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
-rootProject.name = "ASPaper"
+rootProject.name = "ASPurpur"
 
 include(":gradle:platform")
 include(":api")

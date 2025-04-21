@@ -5,30 +5,30 @@ Subject: [PATCH] Branding
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index 532306cacd52579cdf37e4aca25887b1ed3ba6a1..eec04fcdd4b6c6f92a2db37bfe06dca2a93e300d 100644
+index fe66e43c27e0798770e102d1385bacbaa90bda07..2b0d1869fbf1e44774a938981d515cc75cb80704 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -35,7 +35,7 @@ public class PaperVersionFetcher implements VersionFetcher {
-     private static final Logger LOGGER = LogUtils.getClassLogger();
+@@ -36,7 +36,7 @@ public class PaperVersionFetcher implements VersionFetcher {
      private static final int DISTANCE_ERROR = -1;
      private static final int DISTANCE_UNKNOWN = -2;
--    private static final String DOWNLOAD_PAGE = "https://papermc.io/downloads/paper";
+     // Purpur start - Rebrand
+-    private static final String DOWNLOAD_PAGE = "https://purpurmc.org/downloads";
 +    private static final String DOWNLOAD_PAGE = "https://discord.gg/YevvsMa";
+     private static int distance = DISTANCE_UNKNOWN; public int distance() { return distance; }
+     // Purpur end - Rebrand
  
-     @Override
-     public long getCacheTime() {
-@@ -49,7 +49,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -52,7 +52,7 @@ public class PaperVersionFetcher implements VersionFetcher {
          if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
              updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
          } else {
--            updateMessage = getUpdateStatusMessage("PaperMC/Paper", build);
+-            updateMessage = getUpdateStatusMessage("PurpurMC/Purpur", build); // Purpur - Rebrand
 +            updateMessage = getUpdateStatusMessage("InfernalSuite/AdvancedSlimePaper", build);
          }
          final @Nullable Component history = this.getHistory();
  
-@@ -59,16 +59,16 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -62,16 +62,16 @@ public class PaperVersionFetcher implements VersionFetcher {
      private static Component getUpdateStatusMessage(final String repo, final ServerBuildInfo build) {
-         int distance = DISTANCE_ERROR;
+         //int distance = DISTANCE_ERROR; // Purpur - use field - Rebrand
  
 -        final OptionalInt buildNumber = build.buildNumber();
 +        /*final OptionalInt buildNumber = build.buildNumber(); //ASP start
@@ -45,10 +45,10 @@ index 532306cacd52579cdf37e4aca25887b1ed3ba6a1..eec04fcdd4b6c6f92a2db37bfe06dca2
 +        //} //ASP
  
          return switch (distance) {
-             case DISTANCE_ERROR -> text("Error obtaining version information", NamedTextColor.YELLOW);
-@@ -76,7 +76,7 @@ public class PaperVersionFetcher implements VersionFetcher {
-             case DISTANCE_UNKNOWN -> text("Unknown version", NamedTextColor.YELLOW);
-             default -> text("You are " + distance + " version(s) behind", NamedTextColor.YELLOW)
+             case DISTANCE_ERROR -> text("* Error obtaining version information", NamedTextColor.RED); // Purpur - Rebrand
+@@ -79,7 +79,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+             case DISTANCE_UNKNOWN -> text("* Unknown version", NamedTextColor.YELLOW); // Purpur - Rebrand
+             default -> text("* You are " + distance + " version(s) behind", NamedTextColor.YELLOW) // Purpur - Rebrand
                  .append(Component.newline())
 -                .append(text("Download the new version at: ")
 +                .append(text("Download the new version from our Discord: ")
@@ -56,48 +56,48 @@ index 532306cacd52579cdf37e4aca25887b1ed3ba6a1..eec04fcdd4b6c6f92a2db37bfe06dca2
                          .hoverEvent(text("Click to open", NamedTextColor.WHITE))
                          .clickEvent(ClickEvent.openUrl(DOWNLOAD_PAGE))));
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-index 790bad0494454ca12ee152e3de6da3da634d9b20..d047646990ff52b31a24bdebf000ecfbebdae99a 100644
+index b36e30fd4057a938e4d90cb42a2dca661f16478e..b8aa5b1664690c5c19e895ef388e44b62049b00a 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-@@ -31,6 +31,7 @@ public record ServerBuildInfoImpl(
-     private static final String ATTRIBUTE_GIT_COMMIT = "Git-Commit";
+@@ -32,6 +32,7 @@ public record ServerBuildInfoImpl(
  
      private static final String BRAND_PAPER_NAME = "Paper";
-+    private static final String BRAND_ADVANCED_SLIME_PAPER_NAME = "AdvancedSlimePaper";
+     private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur - Rebrand
++    private static final String BRAND_ADVANCED_SLIME_PAPER_NAME = "AdvancedSlimePurpur";
  
      private static final String BUILD_DEV = "DEV";
  
-@@ -42,9 +43,9 @@ public record ServerBuildInfoImpl(
+@@ -43,9 +44,9 @@ public record ServerBuildInfoImpl(
          this(
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
                  .map(Key::key)
--                .orElse(BRAND_PAPER_ID),
-+                .orElse(BRAND_ADVANCED_SLIME_PAPER_ID),
+-                .orElse(BRAND_PURPUR_ID), // Purpur - Fix pufferfish issues // Purpur - Rebrand
++                .orElse(BRAND_ADVANCED_SLIME_PAPER_ID), // Purpur - Fix pufferfish issues // Purpur - Rebrand // ASP - rebrand
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_NAME)
--                .orElse(BRAND_PAPER_NAME),
-+                .orElse(BRAND_ADVANCED_SLIME_PAPER_NAME),
+-                .orElse(BRAND_PURPUR_NAME), // Purpur - Fix pufferfish issues // Purpur - Rebrand
++                .orElse(BRAND_ADVANCED_SLIME_PAPER_NAME), // Purpur - Fix pufferfish issues // Purpur - Rebrand //ASP - rebrand
              SharedConstants.getCurrentVersion().getId(),
              SharedConstants.getCurrentVersion().getName(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
-@@ -61,7 +62,7 @@ public record ServerBuildInfoImpl(
+@@ -62,7 +63,7 @@ public record ServerBuildInfoImpl(
  
      @Override
      public boolean isBrandCompatible(final @NotNull Key brandId) {
--        return brandId.equals(this.brandId);
-+        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID) || brandId.equals(BRAND_ADVANCED_SLIME_PAPER_ID);
+-        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID); // Purpur - Fix pufferfish issues // Purpur - Rebrand
++        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID) || brandId.equals(BRAND_PURPUR_ID) || brandId.equals(BRAND_ADVANCED_SLIME_PAPER_ID) || brandId.equals(BRAND_ADVANCED_SLIME_PURPUR_ID); // Purpur - Fix pufferfish issues // Purpur - Rebrand //ASP - rebrand
      }
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 774556a62eb240da42e84db4502e2ed43495be17..ee1ffebaf4e9f7e2f8e0fd8406357b64d38b7399 100644
+index 99eb04643fce44c37fd96c99756837ccafe7b559..65873068ff57be04e3aa4fd26af4da49fab7e37c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
      public static String getBukkitVersion() {
          String result = "Unknown-Version";
  
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.papermc.paper/paper-api/pom.properties");
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.infernalsuite.asp/aspaper-api/pom.properties");
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Pufferfish // Purpur - Rebrand
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.infernalsuite.asp/aspaper-api/pom.properties"); // Pufferfish // Purpur - Rebrand //ASP
          Properties properties = new Properties();
  
          if (stream != null) {

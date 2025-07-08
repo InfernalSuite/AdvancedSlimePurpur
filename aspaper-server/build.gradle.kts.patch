@@ -1,11 +1,12 @@
 --- a/purpur-server/build.gradle.kts
 +++ b/purpur-server/build.gradle.kts
-@@ -29,7 +_,23 @@
+@@ -36,9 +_,25 @@
              outputDir = rootDirectory.dir("paper-server")
          }
      }
 -    activeFork = purpur
-+
+     // Purpur end - Rebrand
+ 
 +    val aspaper = forks.register("aspaper") {
 +        forks = purpur
 +        upstream.patchRepo("paperServer") {
@@ -22,10 +23,11 @@
 +    }
 +
 +    activeFork = aspaper
- 
++
      spigot {
-         buildDataRef = "3edaf46ec1eed4115ce1b18d2846cded42577e42"
-@@ -115,10 +_,14 @@
+         enabled = true
+         buildDataRef = "436eac9815c211be1a2a6ca0702615f995e81c44"
+@@ -125,10 +_,14 @@
      main {
          java { srcDir("../paper-server/src/main/java") }
          resources { srcDir("../paper-server/src/main/resources") }
@@ -39,19 +41,19 @@
 +        resources { srcDir("../purpur-server/src/test/resources") }
      }
  }
- 
-@@ -142,7 +_,9 @@
+ val log4jPlugins = sourceSets.create("log4jPlugins") {
+@@ -156,7 +_,9 @@
  }
  
  dependencies {
--    implementation(project(":purpur-api"))
+-    implementation(project(":purpur-api")) // Purpur
 +    implementation(project(":aspaper-api"))
 +    implementation(project(":core")) //ASP
 +    implementation("commons-io:commons-io:2.11.0")
      implementation("ca.spottedleaf:concurrentutil:0.0.3")
      implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
      implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
-@@ -216,14 +_,14 @@
+@@ -236,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",

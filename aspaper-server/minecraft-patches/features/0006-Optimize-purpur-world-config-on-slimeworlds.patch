@@ -5,15 +5,15 @@ Subject: [PATCH] Optimize purpur world config on slimeworlds
 
 
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index c4a6a7179b805c0dda7356213e72fbbfba0187de..42123b143e7ac4e336872d43773fcfd5b239d8a2 100644
+index 463754c0d89aaa865bc4c568302f68a593e25dcd..2c54d2f17acba32844018cb341fb9884fc721bcd 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -897,7 +897,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -884,7 +884,7 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
          // Paper end - getblock optimisations - cache world height/sections
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), !(this instanceof com.infernalsuite.asp.level.SlimeLevelInstance)); // Spigot //ASP - Improve Slime IO
          this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper - create paper world config
--        this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), env); // Purpur - Purpur config files
-+        this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), env, !(this instanceof com.infernalsuite.asp.level.SlimeLevelInstance)); // Purpur - Purpur config files //ASP start - optimize purpur config loading
+-        this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), environment); // Purpur - Purpur config files
++        this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), environment, !(this instanceof com.infernalsuite.asp.level.SlimeLevelInstance)); // Purpur - Purpur config files //ASP start - optimize purpur config loading
          this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur - Add adjustable breeding cooldown to config
-         this.generator = gen;
-         this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
+         this.generator = generator;
+         this.world = new CraftWorld((ServerLevel) this, generator, biomeProvider, environment);

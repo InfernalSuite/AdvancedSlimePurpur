@@ -5,15 +5,15 @@ Subject: [PATCH] Avoid IO call for UUID
 
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index f54f39c12baffd69d2f20bdbe4e306735f300dfb..cfa71799202b7db79245cd311d21cbeb7c31286e 100644
+index 19bec17284fd1a907fed34b06baeb15f5f01dd12..c0a0f71d8cb7c4908710ae21ade2b30747b07c08 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -620,7 +620,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -615,7 +615,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
          super(serverLevelData, dimension, server.registryAccess(), levelStem.type(), false, isDebug, biomeZoomSeed, server.getMaxChainedNeighborUpdates(), gen, biomeProvider, env, spigotConfig -> server.paperConfigurations.createWorldConfig(io.papermc.paper.configuration.PaperConfigurations.createWorldContextMap(levelStorageAccess.levelDirectory.path(), serverLevelData.getLevelName(), dimension.location(), spigotConfig, server.registryAccess(), serverLevelData.getGameRules())), dispatcher); // Paper - create paper world configs; Async-Anti-Xray: Pass executor
          this.pvpMode = server.isPvpAllowed();
          this.levelStorageAccess = levelStorageAccess;
--        this.uuid = org.bukkit.craftbukkit.util.WorldUUID.getUUID(levelStorageAccess.levelDirectory.path().toFile());
-+        this.uuid = bootstrap == null ? org.bukkit.craftbukkit.util.WorldUUID.getUUID(levelStorageAccess.levelDirectory.path().toFile()) : UUID.randomUUID(); //ASP - avoid IO calls
+-        this.uuid = org.bukkit.craftbukkit.util.WorldUUID.getOrCreate(levelStorageAccess.levelDirectory.path().toFile());
++        this.uuid = bootstrap == null ? org.bukkit.craftbukkit.util.WorldUUID.getOrCreate(levelStorageAccess.levelDirectory.path().toFile()) : java.util.UUID.randomUUID(); //ASP - avoid IO calls
          // CraftBukkit end
          this.tickTime = tickTime;
          this.server = server;

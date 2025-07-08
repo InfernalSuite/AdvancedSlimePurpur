@@ -1,17 +1,16 @@
 --- a/purpur-api/build.gradle.kts
 +++ b/purpur-api/build.gradle.kts
-@@ -39,7 +_,7 @@
+@@ -40,6 +_,7 @@
  }
  
  dependencies {
--
 +    api(project(":api")) //ASP
      // api dependencies are listed transitively to API consumers
      api("com.google.guava:guava:33.3.1-jre")
      api("com.google.code.gson:gson:2.11.0")
-@@ -104,17 +_,21 @@
+@@ -101,17 +_,21 @@
          java {
-             srcDir(generatedApiPath)
+             srcDir(generatedDir)
              srcDir(file("../paper-api/src/main/java"))
 +            srcDir(file("../purpur-api/src/main/java"))
          }

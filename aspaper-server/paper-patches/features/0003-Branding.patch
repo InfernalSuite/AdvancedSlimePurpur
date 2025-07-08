@@ -5,7 +5,7 @@ Subject: [PATCH] Branding
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index a5a7334f7a1f147945079f20aa04b4f317d9e94c..b4fea19d1f1beabc00dc067ee28896c26bdc64a4 100644
+index a5a7334f7a1f147945079f20aa04b4f317d9e94c..9fffbb9a05ea31deb6ef90b5024680e9899c06a2 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 @@ -36,7 +36,7 @@ public class PaperVersionFetcher implements VersionFetcher {
@@ -46,3 +46,59 @@ index a5a7334f7a1f147945079f20aa04b4f317d9e94c..b4fea19d1f1beabc00dc067ee28896c2
  
          return switch (distance) {
              case DISTANCE_ERROR -> text("* Error obtaining version information", NamedTextColor.RED); // Purpur - Rebrand
+@@ -79,7 +79,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+             case DISTANCE_UNKNOWN -> text("* Unknown version", NamedTextColor.YELLOW); // Purpur - Rebrand
+             default -> text("* You are " + distance + " version(s) behind", NamedTextColor.YELLOW) // Purpur - Rebrand
+                 .append(Component.newline())
+-                .append(text("Download the new version at: ")
++                    .append(text("Download the new version from our Discord: ")
+                     .append(text(DOWNLOAD_PAGE, NamedTextColor.GOLD)
+                         .hoverEvent(text("Click to open", NamedTextColor.WHITE))
+                         .clickEvent(ClickEvent.openUrl(DOWNLOAD_PAGE))));
+diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+index 1b0ee48e28aaa68ddb1f28c23d3c5f5f40505c98..3079a3ac79160c19e434475137e96f2a35e602c6 100644
+--- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -32,7 +32,7 @@ public record ServerBuildInfoImpl(
+ 
+     private static final String BRAND_PAPER_NAME = "Paper";
+     private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur - Rebrand
+-
++    private static final String BRAND_ADVANCED_SLIME_PAPER_NAME = "AdvancedSlimePurpur";
+     private static final String BUILD_DEV = "DEV";
+ 
+     public ServerBuildInfoImpl() {
+@@ -43,9 +43,9 @@ public record ServerBuildInfoImpl(
+         this(
+             getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
+                 .map(Key::key)
+-                .orElse(BRAND_PURPUR_ID), // Purpur - Rebrand
++                .orElse(BRAND_ADVANCED_SLIME_PAPER_ID), // Purpur - Rebrand // ASP - rebrand
+             getManifestAttribute(manifest, ATTRIBUTE_BRAND_NAME)
+-                .orElse(BRAND_PURPUR_NAME), // Purpur - Rebrand
++                .orElse(BRAND_ADVANCED_SLIME_PAPER_NAME), // Purpur - Rebrand // ASP - rebrand
+             SharedConstants.getCurrentVersion().id(),
+             SharedConstants.getCurrentVersion().name(),
+             getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
+@@ -62,7 +62,7 @@ public record ServerBuildInfoImpl(
+ 
+     @Override
+     public boolean isBrandCompatible(final @NotNull Key brandId) {
+-        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID); // Purpur - Fix pufferfish issues // Purpur - Rebrand
++        return brandId.equals(this.brandId) || brandId.equals(BRAND_PAPER_ID) || brandId.equals(BRAND_PURPUR_ID) || brandId.equals(BRAND_ADVANCED_SLIME_PAPER_ID) || brandId.equals(BRAND_ADVANCED_SLIME_PURPUR_ID); // Purpur - Fix pufferfish issues // Purpur - Rebrand //ASP - rebrand
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 99eb04643fce44c37fd96c99756837ccafe7b559..65873068ff57be04e3aa4fd26af4da49fab7e37c 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Pufferfish // Purpur - Rebrand
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.infernalsuite.asp/aspaper-api/pom.properties"); // Pufferfish // Purpur - Rebrand //ASP
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
